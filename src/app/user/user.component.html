@@ -1,0 +1,22 @@
+<div *ngIf="session.is_logged_in === false; else showDashboard">
+  <div class="card-body bg-dark" style="text-align: center">
+    <h5>User Login</h5>
+  </div>
+  <div class="card-body bg-light" style="text-align: center">
+    <button (click)="onGoogleLogin()" class="btn btn-outline-primary">
+      <span class="fa fa-google"></span> Google Login
+    </button>
+  </div>  
+</div>
+<ng-template #showDashboard>
+  <div class="card-body bg-dark" style="text-align: center">
+    <h5>User Profile</h5>
+  </div>
+  <div class="card-body bg-light" style="text-align: center">
+    <button (click)="onLogout()" class="btn btn-outline-primary">
+      <span class="fa fa-out"></span> Log Off
+    </button>
+  </div>
+      
+</ng-template>
+

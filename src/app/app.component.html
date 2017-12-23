@@ -1,20 +1,50 @@
 <!--The content below is only a placeholder and can be replaced.-->
-<div style="text-align:center">
-  <h1>
-    Welcome to {{title}}!
-  </h1>
-  <img width="300" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNTAgMjUwIj4KICAgIDxwYXRoIGZpbGw9IiNERDAwMzEiIGQ9Ik0xMjUgMzBMMzEuOSA2My4ybDE0LjIgMTIzLjFMMTI1IDIzMGw3OC45LTQzLjcgMTQuMi0xMjMuMXoiIC8+CiAgICA8cGF0aCBmaWxsPSIjQzMwMDJGIiBkPSJNMTI1IDMwdjIyLjItLjFWMjMwbDc4LjktNDMuNyAxNC4yLTEyMy4xTDEyNSAzMHoiIC8+CiAgICA8cGF0aCAgZmlsbD0iI0ZGRkZGRiIgZD0iTTEyNSA1Mi4xTDY2LjggMTgyLjZoMjEuN2wxMS43LTI5LjJoNDkuNGwxMS43IDI5LjJIMTgzTDEyNSA1Mi4xem0xNyA4My4zaC0zNGwxNy00MC45IDE3IDQwLjl6IiAvPgogIDwvc3ZnPg==">
-</div>
-<h2>Here are some links to help you start: </h2>
-<ul>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://angular.io/tutorial">Tour of Heroes</a></h2>
-  </li>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://github.com/angular/angular-cli/wiki">CLI Documentation</a></h2>
-  </li>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://blog.angular.io/">Angular blog</a></h2>
-  </li>
-</ul>
+<div class="h-box">
+  <div class="row">
+    <div class="col-2 d-none d-sm-block">
+    </div>
+    <div class="col-12 col-sm-8">
+      <div class="card poem bg-primary text-white">
+        <div class="card-header">
+          <div class="row">
+            <div class="col-7" style="vertical-align: middle">
+              <span *ngIf="session.is_home !== true" (click)="onBack()" class="fa fa-chevron-left" aria-hidden="true"></span>
+              <a class="navbar-brand">Random Poetry</a>
+            </div>
+            <div class="col-5" style="text-align:right; vertical-align: middle">
+              <button *ngIf="session.is_logged_in === true" (click)="onAdd()" class="btn btn-primary">
+                <span class="fa fa-plus" aria-hidden="true"></span>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div>
+          <router-outlet></router-outlet>
+        </div>
+        <div class="card-footer">
+          <div class="row p-0" style="justify-content: center; display:flex">
+            <div class="col-2">
+              <button (click)="onSettings()" class="btn btn-primary">
+                <span class="fa fa-cog" aria-hidden="true"></span>
+              </button>
+            </div>
+            <div class="col-8" style="text-align: center">
+              <button (click)="onNext()" class="btn btn-primary">
+                <span class="fa fa-arrow-right" aria-hidden="true"></span>
+              </button>
+            </div>
+            <div class="col-2">
+              <button (click)="onLogin()" class="btn btn-primary float-right">
+                <span class="fa fa-user" aria-hidden="true"></span>
+              </button>
+            </div>
+          </div>
+        </div>
 
+      </div>
+    </div>
+    <div class="col-2 d-none d-sm-block">
+    </div>
+  </div>
+
+</div>
