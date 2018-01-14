@@ -1,3 +1,6 @@
-div.main-poem {
-  padding: 30px;
+div.floating {
+  position: fixed;
+  z-index: 2;
+  top: 200px;
+  left:5px;
 }

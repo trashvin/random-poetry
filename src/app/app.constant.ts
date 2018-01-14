@@ -2,7 +2,7 @@ export class AppConstants {
   public readonly app_title: string = "rendom poetry";
   public readonly google_auth: string = "google";
   public readonly fb_auth: string = "facebook";
-  public readonly resolved_events = "events";
+  public readonly resolved_poem = "poem";
   public readonly resolved_profile = "profile";
   public readonly dialog_ok_only = 0;
   public readonly dialog_ok_cancel = 1;

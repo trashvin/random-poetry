@@ -1,7 +1,11 @@
 import { Component } from "@angular/core";
 import { Router, ActivatedRoute } from "@angular/router";
+import { Subscription, ISubscription } from "rxjs/Subscription";
 
-import { SessionService } from "./_shared/service";
+
+import { SessionService, StorageService, StitchService, AlertService } from "./_shared/services/service";
+import { AppConstants } from "./app.constant";
+import { Logger } from "./_shared/libraries/logger";
 
 @Component({
   selector: "app-root",
@@ -9,29 +13,88 @@ import { SessionService } from "./_shared/service";
   styleUrls: ["./app.component.css"]
 })
 export class AppComponent {
+  private log = new Logger("App", "Component");
   title = "random poetry";
+  name: string;
+  pic_url: string;
+  subscriber: ISubscription;
   constructor(
+    private alert: AlertService,
+    private stitch: StitchService,
+    private storage: StorageService,
+    private constant: AppConstants,
     private router: Router,
     public session: SessionService
   ) {
+    this.subscriber = this.alert.getMessage().subscribe( message => {
+      window.alert(message.text);
+    });
+
     session.is_home = true;
+    // if (this.stitch.isAuthenticated() === false) {
+    //   this.stitch.doLoginAnonymous().then(result => {
+    //     this.log.raw(result);
+    //     this.stitch.getRandomPoem();
+    //     this.stitch.doLogout();
+    //   }).catch(err => {
+    //     this.log.e(err);
+    //   });
+    // } else {
+    //   this.stitch.getRandomPoem();
+    // }
+    // this.stitch.getRandomPoem();
+    this.name = this.session.is_logged_in === true ? this.session.user_name : "guest";
+    this.pic_url = this.session.is_logged_in === true ? this.session.user_picture : "assets/user_small.jpg";
   }
-  onLogin() {
+  onSignIn() {
     this.session.is_home = false;
-    this.router.navigate(["/user"]);
+    if ( this.session.is_anonymous === true) {
+      this.stitch.doLogout().then(() => {
+        this.session.is_logged_in = false;
+        this.session.clear();
+        this.router.navigate(["user"]);
+      }). catch( err => {
+        this.log.e(err);
+      });
+    } else {
+      this.router.navigate(["user"]);
+    }
   }
   onSettings() {
     this.session.is_home = false;
     this.router.navigate(["settings"]);
   }
   onAdd() {
+    this.session.current_action = this.constant.action_add;
     this.session.is_home = false;
-    this.router.navigate(["new"]);
+    this.router.navigate(["details"]);
       }
   onBack() {
     this.session.is_home = true;
     this.router.navigate(["/"]);
   }
-  onNext() {
+  onHome() {
+    this.session.is_home = true;
+    this.router.navigate(["/"]);
+  }
+  onDashboard() {
+    this.router.navigate(["user"]);
+  }
+  onSignOff() {
+    this.stitch.doLogout().then(() => {
+      this.session.is_logged_in = false;
+      this.session.clear();
+      this.router.navigate(["/"]);
+    }). catch( err => {
+      this.log.e(err);
+    });
+  }
+  getRawName() {
+    const name = this.session.user_name;
+    if ( this.session.is_logged_in ) {
+      return name.replace(/(\r\n|\n|\r)/gm, "");
+    } else {
+      return "guest";
+    }
   }
 }

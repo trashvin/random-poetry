@@ -1,0 +1,47 @@
+<h5>{{view_label}}</h5>
+<div class="card-body bg-light" style="text-align: center; color:black">
+  <form [formGroup]="detail_form"> 
+    <fieldset [disabled]="!allow_edit">
+      <div class="row form-group">
+        <input class="form-control" id="title" placeholder="enter poem title" formControlName = "title" required>
+        <small *ngIf="detail_form.controls.title.invalid && detail_form.controls.title.touched" class="error">Title is empty.</small>
+      </div>
+      <div class="row form-group">
+          <input class="form-control" id="author" placeholder="enter authors name" formControlName = "author" required>
+          <small *ngIf="detail_form.controls.author.invalid && detail_form.controls.author.touched" class="error">Author name is empty.</small>
+        </div>
+      <div class="row form-group">
+        <textarea class="form-control" rows="10" id="poem" formControlName ="poem" required placeholder="your poem goes here..."></textarea>
+        <small *ngIf="detail_form.controls.poem.invalid && detail_form.controls.poem.touched" class="error">Poem is empty.</small>
+      </div>
+      <div class="row form-group">
+        <input class="form-control" id="for_email" formControlName="for_email" placeholder="email address of intended recepient (optional)">
+        <small *ngIf="detail_form.controls.for_email.invalid && detail_form.controls.for_email.touched" class="error">Invalid Email Address</small>
+      </div>
+      <div class="row form-group">
+          <input class="form-control" id="receipient" formControlName="tags"  placeholder="enter tags separated by comma (optional)">
+      </div>
+      <div class="form-check" style="text-align: left">
+          <label class="form-check-label">
+            <input class="form-check-input" type="checkbox" value="" checked="" formControlName="public">
+            show this poem to the rest of the world
+          </label>
+      </div>
+      <div class="form-check" style="text-align: left">
+          <label class="form-check-label">
+            <input class="form-check-input" type="checkbox" value="" checked="" formControlName="own_poem">
+            i proudly wrote this poem
+          </label>
+      </div> 
+      <div class="form-check" style="text-align: left">
+        <label class="form-check-label">
+          <input class="form-check-input" type="checkbox" value="" checked="" formControlName="published">
+          published
+        </label>
+    </div>   
+      <button class="btn" (click)="onCancel()">cancel</button>
+      <button class="btn btn-primary" (click)="onSubmit()">submit</button>
+      <button class="btn" [hidden]="session.current_action === 1" (click)="onDelete()">delete</button>
+    </fieldset>
+  </form>
+</div>

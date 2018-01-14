@@ -1,29 +1,53 @@
-<div class="card-body bg-dark" style="text-align: center">
-    <h6 class="card-title text-white">The Long Titles Of Poetic Writings</h6>
-    <small>James Hetfield | December 12, 2017</small>
-    <br/>
+<div *ngIf="true; else mustLogin">
+  <div class="card-body bg-light" style="text-align: center">
+    <h4 class="card-title">{{title}}</h4>
+    <p>{{author}}</p>
     <small>
-      <span class="fa fa-heart" aria-hidden="true"></span> {{hearts}}
+      {{likes}}
+      <span class="fa fa-heart" aria-hidden="true" style="color:#F44336"></span>
     </small>
+  </div>
+  <div class="card-body bg-light text-dark" style="text-align: center">
+    <div class="main-poem" style="font-size: 12pt; vertical-align:text-top">
+      <pre style="border-style: none;white-space:pre-line; color: black">{{poem}}</pre>
+    </div>
+    <div style="padding: 20px">
+      <span class="badge badge-pill badge-secondary" style="margin: 2px" *ngFor="let tag of tags">
+        {{tag}}
+      </span>
+    </div>
+  </div>
 </div>
-<div class="card-body bg-light text-dark" style="text-align: center">
-  <div class="main-poem" style="font-size: 12pt; vertical-align:text-top">
-    {{body}}
+<ng-template #mustLogin >
+  <div style="text-align:center;padding-top:30px">
+      <h2 >must log in first</h2>
+      <p>this is temporary while we are</p>
+      <p>figuring out anonymous access</p>
   </div>
-  <div style="padding: 20px"> 
-      <span class="badge badge-pill badge-info">Love</span>
-      <span class="badge badge-pill badge-info">Hate</span>
-      <span class="badge badge-pill badge-info">Happy</span>
-  </div>
-  <div>
-    <button *ngIf="session.is_logged_in === true" class="btn btn-outline-primary">
-      <span class="fa fa-pencil" aria-hidden="true"></span>
-    </button>
-    <button class="btn btn-outline-primary" (click)="onHeart()">
+</ng-template>
+
+<div class="floating align-middle">
+  <div class="btn-group-vertical">
+    <button *ngIf="session.is_logged_in" class="btn btn-outline-primary" (click)="onHeart()" data-toggle="tooltip" data-placement="right" title="send your love multiple times">
       <span class="fa fa-heart" aria-hidden="true" style="color:#F44336"></span>
     </button>
-    <button *ngIf="session.is_logged_in === true" class="btn btn-outline-primary">
-      <span class="fa fa-trash" aria-hidden="true"></span>
+    <button class="btn btn-outline-primary" (click)="onNext()" data-toggle="tooltip" data-placement="right" title="next random poem">
+      <span class="fa fa-step-forward" aria-hidden="true"></span>
     </button>
+    <button class="btn btn-outline-primary" data-toggle="tooltip" data-placement="right" title="customize the randomness">
+      <span class="fa fa-cog" aria-hidden="true"></span>
+    </button>
+    <button class="btn btn-outline-primary" data-toggle="tooltip" data-placement="right" title="see some analytics">
+      <span class="fa fa-pie-chart" aria-hidden="true"></span>
+    </button>
+    <button class="btn btn-outline-primary" data-toggle="tooltip" data-placement="right" title="tweet the poem">
+      <span class="fa fa-twitter" aria-hidden="true"></span>
+    </button>
+    <button class="btn btn-outline-primary" data-toggle="tooltip" data-placement="right" title="email the poem">
+      <span class="fa fa-envelope-o" aria-hidden="true"></span>
+    </button>
+    <button class="btn btn-outline-primary" data-toggle="tooltip" data-placement="right" title="about random poetry">
+        <span class="fa fa-info-circle" aria-hidden="true"></span>
+      </button>
   </div>
 </div>

@@ -1,0 +1,11 @@
+li:active {
+  background-color: gainsboro;
+}
+li:hover {
+  background-color:gainsboro;
+}
+div.dashboard {
+  padding-left: 20px;
+  padding-right: 20px;
+  color: black;
+}

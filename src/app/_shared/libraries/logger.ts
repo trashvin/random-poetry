@@ -1,4 +1,4 @@
-import { environment } from "../../environments/environment";
+import { environment } from "../../../environments/environment";
 export class Logger {
   private _source: string;
   private _type: string;
@@ -41,6 +41,7 @@ export class Logger {
     this._function = undefined;
   }
   info(message) {
+    message = JSON.stringify(message);
     if (environment.log_level >= 1) {
       if (this._function !== undefined) {
         console.info(
@@ -88,6 +89,7 @@ export class Logger {
     this.error(message);
   }
   log(message) {
+    message = JSON.stringify(message);
     if (environment.log_level >= 2) {
       if (this._function !== undefined) {
         console.log(
@@ -102,6 +104,9 @@ export class Logger {
     this.log(message);
   }
   raw(message) {
-    console.log("Raw Data:", message);
+    if (environment.log_level >= 2) {
+      console.log(`[${this._type}][${this._source}]`);
+      console.log(message);
+    }
   }
 }

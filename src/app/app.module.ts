@@ -3,18 +3,19 @@ import { NgModule } from "@angular/core";
 import { Router, ActivatedRoute, CanActivate } from "@angular/router";
 import { HttpModule } from "@angular/http";
 import { FormsModule } from "@angular/forms";
-import { AngularFireModule } from "angularfire2";
-import { AngularFireDatabaseModule } from "angularfire2/database";
-import { AngularFireAuthModule } from "angularfire2/auth";
+import { ReactiveFormsModule } from "@angular/forms";
 
 import { environment } from "../environments/environment";
 import { AppComponent } from "./app.component";
-import { AuthService, SessionService } from "./_shared/service";
+import { StitchService, AlertService, SessionService, StorageService } from "./_shared/services/service";
 import { PoemComponent } from "./poem/poem.component";
 import { AppRoutes } from "./app.route";
 import { SettingsComponent } from "./settings/settings.component";
-import { AddPoemComponent } from "./add-poem/add-poem.component";
 import { UserComponent } from "./user/user.component";
+import { AppConstants } from "./app.constant";
+import { ProfileResolver } from "./_shared/resolvers/profile.resolver";
+import { PoemDetailComponent } from "./poem-detail/poem-detail.component";
+import { PoemResolver } from "./_shared/resolvers/poem.resolver";
 
 @NgModule({
   declarations: [
@@ -22,19 +23,22 @@ import { UserComponent } from "./user/user.component";
     PoemComponent,
     UserComponent,
     SettingsComponent,
-    AddPoemComponent,
-    UserComponent
+    UserComponent,
+    PoemDetailComponent
   ],
   imports: [
     BrowserModule,
+    ReactiveFormsModule,
     AppRoutes,
-    AngularFireAuthModule,
-    AngularFireAuthModule,
-    AngularFireModule.initializeApp(environment.firebase, "random-poetry-dev")
   ],
   providers: [
-    AuthService,
-    SessionService
+    StitchService,
+    SessionService,
+    AlertService,
+    AppConstants,
+    ProfileResolver,
+    StorageService,
+    PoemResolver
   ],
   bootstrap: [AppComponent]
 })

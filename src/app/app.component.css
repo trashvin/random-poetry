@@ -1,0 +1,13 @@
+a.dropdown-item:hover {
+  color:white;
+}
+div.spinner {
+  /* position: fixed;
+  z-index: 2;
+  top: 200px;
+  left:0px; */
+  position: fixed;
+   top: 50%;
+   left: 50%;
+   transform: translate(-50%, -50%);
+}

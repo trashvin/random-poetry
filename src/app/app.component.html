@@ -1,5 +1,49 @@
 <!--The content below is only a placeholder and can be replaced.-->
-<div class="h-box">
+<nav class="p-2 navbar-expand">
+  <div class="row">
+    <a class="navbar-brand" href="#">
+      random poetry
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor03" aria-controls="navbarColor03"
+      aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse d-flex flex-row-reverse">
+      <ul class="nav nav-pills">
+        <li class="nav-item dropdown">    
+          <a class="nav-link dropdown-toggle" data-toggle="dropdown" 
+            href="#" role="button" aria-haspopup="true" aria-expanded="true">
+            {{getRawName()}}
+          </a>
+          <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; transform: translate3d(0px, 40px, 0px); top: 0px; left: 0px; will-change: transform;">
+            <a *ngIf="session.is_logged_in === true" class="dropdown-item" (click)="onDashboard()">
+                <span class="fa fa-info" aria-hidden="true"></span>
+                my profile
+            </a>
+            <div *ngIf="session.is_logged_in === true;" class="dropdown-divider"></div>
+            <a *ngIf="session.is_logged_in === true;" class="dropdown-item" (click)="onSignOff()">
+                <span class="fa fa-sign-out" aria-hidden="true"></span>
+                sign out
+            </a>
+            <a *ngIf="session.is_logged_in !== true" class="dropdown-item" (click)="onSignIn()">
+                <span class="fa fa-sign-in" aria-hidden="true"></span>
+                sign in
+            </a>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<!-- <div class="spacer-h50"></div> -->
+<div class="main-view">
+  <router-outlet></router-outlet>
+</div>
+<div class="spinner" *ngIf="session.is_busy">
+  <span class="fa fa-spinner fa-spin fa-5x" style="font-size:70px;color:gray"></span>
+</div>
+
+<!-- <div class="h-box">
   <div class="row">
     <div class="col-2 d-none d-sm-block">
     </div>
@@ -9,7 +53,7 @@
           <div class="row">
             <div class="col-7" style="vertical-align: middle">
               <span *ngIf="session.is_home !== true" (click)="onBack()" class="fa fa-chevron-left" aria-hidden="true"></span>
-              <a class="navbar-brand">Random Poetry</a>
+              <a (click)="onHome()" class="navbar-brand" style="cursor: default">Random Poetry</a>
             </div>
             <div class="col-5" style="text-align:right; vertical-align: middle">
               <button *ngIf="session.is_logged_in === true" (click)="onAdd()" class="btn btn-primary">
@@ -46,5 +90,4 @@
     <div class="col-2 d-none d-sm-block">
     </div>
   </div>
-
-</div>
+</div> -->
