@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 
-import { SessionService } from "../_shared/service";
+import { SessionService, StitchService } from "../_shared/service";
 
 @Component({
   selector: "app-user",
@@ -10,16 +10,20 @@ import { SessionService } from "../_shared/service";
 export class UserComponent implements OnInit {
 
   constructor(
-    public session: SessionService
+    public session: SessionService,
+    public stitch: StitchService
   ) { }
 
   ngOnInit() {
   }
   onGoogleLogin() {
-    this.session.is_logged_in = true;
+    this.stitch.doLoginGoogle();
+  }
+  onFBLogin() {
+    this.stitch.doLoginFB();
   }
   onLogout() {
-    this.session.is_logged_in = false;
+    this.stitch.doLogout();
   }
 
 }
