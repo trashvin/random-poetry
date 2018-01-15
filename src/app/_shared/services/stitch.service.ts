@@ -97,7 +97,7 @@ export class StitchService {
       title: new_poem.title,
       poem: new_poem.poem,
       for_email: new_poem.for_email,
-      tags: new_poem.tags,
+      tags: this.stringToArray(new_poem.tags),
       date: new Date(),
       public: new_poem.public,
       author: new_poem.author,
@@ -115,6 +115,14 @@ export class StitchService {
     this.log.raw(_id);
     return this.poem_collection
           .updateOne({_id: _id, owner_id: this.client.authedId()}, {$set: update_fields});
+  }
+  updateLikes(_id, update_fields) {
+    this.log.functionName = "updateLikes";
+    this.log.i("Update poem");
+    this.log.raw(update_fields);
+    this.log.raw(_id);
+    return this.poem_collection
+          .updateOne({_id: _id}, {$inc: update_fields});
   }
   deletePoem(_id) {
     this.log.functionName = "deletePoem";
@@ -171,16 +179,14 @@ export class StitchService {
             author: result.author,
             poem: result.poem,
             date_submitted: result.date_submitted,
-            for: result.for,
             for_email: result.for_email,
             tags: result.tags,
             likes: result.likes,
             owner_id: result.owner_id,
             public: result.public,
-            arrayOfTags: [],
-            formattedDate: "",
             own_poem: result.own_poem,
-            published: result.published
+            published: result.published,
+            shares: result.shares
           };
           this.poem_subject.next(poem);
           this.session.is_busy = false;
@@ -217,10 +223,9 @@ export class StitchService {
             likes: result.likes,
             owner_id: result.owner_id,
             public: result.public,
-            arrayOfTags: [],
-            formattedDate: "",
             own_poem: result.own_poem,
-            published: result.published
+            published: result.published,
+            shares: result.shares
           };
           // this.log.raw(poem);
           this.random_poem_subject.next(poem);
@@ -233,5 +238,25 @@ export class StitchService {
     } catch (err) {
       this.log.e(err);
     }
+  }
+  arrayToString(data): string {
+    let result = "";
+    this.log.l("999");
+    if(data !== null && data !== undefined) {
+      this.log.l("666");
+      if ( data.length > 0) {
+        data.forEach(element => {
+          result += element + " ; ";
+        });
+      }
+    } 
+    return result;
+  }
+  stringToArray(data) {
+    let tags = [];
+    if (data !== undefined && data !== null) {
+      tags = data.split(";");
+    }
+    return tags;
   }
 }

@@ -16,6 +16,7 @@ import { AppConstants } from "./app.constant";
 import { ProfileResolver } from "./_shared/resolvers/profile.resolver";
 import { PoemDetailComponent } from "./poem-detail/poem-detail.component";
 import { PoemResolver } from "./_shared/resolvers/poem.resolver";
+import { AboutComponent } from './about/about.component';
 
 @NgModule({
   declarations: [
@@ -24,7 +25,8 @@ import { PoemResolver } from "./_shared/resolvers/poem.resolver";
     UserComponent,
     SettingsComponent,
     UserComponent,
-    PoemDetailComponent
+    PoemDetailComponent,
+    AboutComponent
   ],
   imports: [
     BrowserModule,

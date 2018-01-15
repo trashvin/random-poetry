@@ -18,6 +18,7 @@ export class AppComponent {
   name: string;
   pic_url: string;
   subscriber: ISubscription;
+  alert_message: string;
   constructor(
     private alert: AlertService,
     private stitch: StitchService,
@@ -27,22 +28,13 @@ export class AppComponent {
     public session: SessionService
   ) {
     this.subscriber = this.alert.getMessage().subscribe( message => {
-      window.alert(message.text);
+      this.session.is_busy = false;
+      // window.alert(message.text);
+      this.alert_message = message.text;
+      $(#alertBox).modal("show");
     });
 
     session.is_home = true;
-    // if (this.stitch.isAuthenticated() === false) {
-    //   this.stitch.doLoginAnonymous().then(result => {
-    //     this.log.raw(result);
-    //     this.stitch.getRandomPoem();
-    //     this.stitch.doLogout();
-    //   }).catch(err => {
-    //     this.log.e(err);
-    //   });
-    // } else {
-    //   this.stitch.getRandomPoem();
-    // }
-    // this.stitch.getRandomPoem();
     this.name = this.session.is_logged_in === true ? this.session.user_name : "guest";
     this.pic_url = this.session.is_logged_in === true ? this.session.user_picture : "assets/user_small.jpg";
   }

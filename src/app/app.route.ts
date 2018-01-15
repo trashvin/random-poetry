@@ -2,6 +2,7 @@ import { RouterModule, Routes } from "@angular/router";
 import { Router, ActivatedRoute, CanActivate} from "@angular/router";
 
 import { PoemComponent } from "./poem/poem.component";
+import { AboutComponent } from "./about/about.component";
 import { UserComponent } from "./user/user.component";
 import { SettingsComponent } from "./settings/settings.component";
 import { PoemDetailComponent } from "./poem-detail/poem-detail.component";
@@ -18,7 +19,8 @@ const ROUTES: Routes = [
   { path: "poem", component: PoemComponent },
   { path: "settings", component: SettingsComponent},
   { path: "details", component: PoemDetailComponent},
-  { path: "detail/:poem_id", component: PoemDetailComponent, resolve: { poem: PoemResolver}}
+  { path: "detail/:poem_id", component: PoemDetailComponent, resolve: { poem: PoemResolver}},
+  { path: "about", component: AboutComponent }
 ];
 
 export const AppRoutes = RouterModule.forRoot(ROUTES);

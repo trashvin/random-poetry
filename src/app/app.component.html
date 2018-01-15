@@ -10,24 +10,23 @@
     </button>
     <div class="collapse navbar-collapse d-flex flex-row-reverse">
       <ul class="nav nav-pills">
-        <li class="nav-item dropdown">    
-          <a class="nav-link dropdown-toggle" data-toggle="dropdown" 
-            href="#" role="button" aria-haspopup="true" aria-expanded="true">
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="true">
             {{getRawName()}}
           </a>
           <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; transform: translate3d(0px, 40px, 0px); top: 0px; left: 0px; will-change: transform;">
             <a *ngIf="session.is_logged_in === true" class="dropdown-item" (click)="onDashboard()">
-                <span class="fa fa-info" aria-hidden="true"></span>
-                my profile
+              <span class="fa fa-info" aria-hidden="true"></span>
+              my profile
             </a>
             <div *ngIf="session.is_logged_in === true;" class="dropdown-divider"></div>
             <a *ngIf="session.is_logged_in === true;" class="dropdown-item" (click)="onSignOff()">
-                <span class="fa fa-sign-out" aria-hidden="true"></span>
-                sign out
+              <span class="fa fa-sign-out" aria-hidden="true"></span>
+              sign out
             </a>
             <a *ngIf="session.is_logged_in !== true" class="dropdown-item" (click)="onSignIn()">
-                <span class="fa fa-sign-in" aria-hidden="true"></span>
-                sign in
+              <span class="fa fa-sign-in" aria-hidden="true"></span>
+              sign in
             </a>
           </div>
         </li>
@@ -41,6 +40,21 @@
 </div>
 <div class="spinner" *ngIf="session.is_busy">
   <span class="fa fa-spinner fa-spin fa-5x" style="font-size:70px;color:gray"></span>
+</div>
+<div class="modal fade" id="alertBox" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4>message</h4>
+      </div>
+      <div class="modal-body">
+        {{alert_message}}
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">ok</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- <div class="h-box">

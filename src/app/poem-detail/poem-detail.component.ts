@@ -88,14 +88,14 @@ export class PoemDetailComponent implements OnInit {
       this.session.is_busy = true;
       this.stitch.addPoem(this.poem).then(result => {
         this.log.i("New poem saved.");
+        this.session.is_busy = false;
         this.alert.sendMessage("New poem saved!");
         this.router.navigate(["user"]);
-        this.session.is_busy = false;
       }).catch(err => {
         this.log.e("Error saving poem");
+        this.session.is_busy = false;
         this.alert.sendMessage("Error saving new poem.");
         this.allow_edit = true;
-        this.session.is_busy = false;
       });
     } catch (ex) {
       this.log.e(ex);
@@ -107,32 +107,32 @@ export class PoemDetailComponent implements OnInit {
     this.session.is_busy = true;
     this.stitch.updatePoem(this._id, changes).then( result => {
       this.log.i("Changes saved.");
+      this.session.is_busy = false;
       this.alert.sendMessage("Updated poem!");
       this.router.navigate(["user"]);
-      this.session.is_busy = false;
     }).catch(err => {
       this.log.e("Error saving poem");
+      this.session.is_busy = false;
       this.alert.sendMessage("Error saving updated poem.");
       this.allow_edit = true;
-      this.session.is_busy = false;
     });
   }
   onDelete() {
-    const answer = window.confirm(`Delete ${this.title} ?`);
-    if ( answer) {
-      this.session.is_busy = true;
+    $(#confirmBox).modal("show");
+  }
+  deletePoem() {
+    this.session.is_busy = true;
       this.stitch.deletePoem(this._id).then( result => {
         this.log.i("Successfully deleted poem.");
+        this.session.is_busy = false;
         this.alert.sendMessage("Successfully deleted poem.");
         this.router.navigate(["user"]);
-        this.session.is_busy = false;
       }).catch(err => {
         this.log.e("Error deleting poem");
+        this.session.is_busy = false;
         this.alert.sendMessage("Error deleting poem.");
         this.allow_edit = true;
-        this.session.is_busy = false;
       });
-    }
   }
   private setFormValue(result) {
     this.log.l(result.title);
@@ -143,7 +143,7 @@ export class PoemDetailComponent implements OnInit {
       "author": result.author,
       "poem": result.poem,
       "for_email": result.for_email,
-      "tags": result.tags,
+      "tags": this.arrayToString(result.tags),
       "public": result.public !== true ? false : true,
       "own_poem": result.own_poem !== true ? false : true,
       "published": result.published !== true ? false : true
@@ -175,7 +175,6 @@ export class PoemDetailComponent implements OnInit {
     const result = {};
     Object.keys(this.detail_form.controls).forEach(key => {
       if (this.detail_form.get(key).dirty) {
-        result[key] = this.detail_form.get(key).value;
         if (key === "own_poem") {
           if (result[key]) {
             result["author"] = this.session.user_name;
@@ -183,8 +182,38 @@ export class PoemDetailComponent implements OnInit {
             result["author"] = this.detail_form.get("author").value;
           }
         }
+        if (key === "tags") {
+          result[key] = this.stringToArray(this.detail_form.get(key).value);
+        } else {
+          result[key] = this.detail_form.get(key).value;
+        }
       }
     });
     return result;
   }
+  private arrayToString(data): string {
+    let result = "";
+    if (data !== null && data !== undefined) {
+      if ( data.length > 0) {
+        data.forEach(element => {
+          result += element + " ;";
+        });
+      }
+    }
+    return result;
+  }
+  stringToArray(data) {
+    let tags = [];
+    if (data !== undefined && data !== null) {
+      tags = data.split(";");
+    }
+    return tags;
+  }
+  // private stringToArray(data) {
+  //   let tags = [];
+  //   if (tags !== undefined) {
+  //     tags = this.tags.split(";");
+  //   }
+  //   return tags;
+  // }
 }

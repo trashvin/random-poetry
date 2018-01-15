@@ -4,7 +4,8 @@
     <p>{{author}}</p>
     <small>
       {{likes}}
-      <span class="fa fa-heart" aria-hidden="true" style="color:#F44336"></span>
+      <span class="fa fa-heart" aria-hidden="true" style="color:#F44336"></span> | {{shares}}
+      <span class="fa fa-share-alt" aria-hidden="true" style="color:black"></span>
     </small>
   </div>
   <div class="card-body bg-light text-dark" style="text-align: center">
@@ -18,36 +19,63 @@
     </div>
   </div>
 </div>
-<ng-template #mustLogin >
+<ng-template #mustLogin>
   <div style="text-align:center;padding-top:30px">
-      <h2 >must log in first</h2>
-      <p>this is temporary while we are</p>
-      <p>figuring out anonymous access</p>
+    <h2>must log in first</h2>
+    <p>this is temporary while we are</p>
+    <p>figuring out anonymous access</p>
   </div>
 </ng-template>
 
 <div class="floating align-middle">
   <div class="btn-group-vertical">
-    <button *ngIf="session.is_logged_in" class="btn btn-outline-primary" (click)="onHeart()" data-toggle="tooltip" data-placement="right" title="send your love multiple times">
+    <button *ngIf="session.is_logged_in" class="btn btn-outline-primary" (click)="onHeart()" data-toggle="tooltip" data-placement="right"
+      title="send your love multiple times">
       <span class="fa fa-heart" aria-hidden="true" style="color:#F44336"></span>
     </button>
     <button class="btn btn-outline-primary" (click)="onNext()" data-toggle="tooltip" data-placement="right" title="next random poem">
       <span class="fa fa-step-forward" aria-hidden="true"></span>
     </button>
-    <button class="btn btn-outline-primary" data-toggle="tooltip" data-placement="right" title="customize the randomness">
+    <button *ngIf="session.is_logged_in"  class="btn btn-outline-primary" data-toggle="tooltip" data-placement="right" title="add a poem" (click)="onAdd()">
+      <span class="fa fa-plus" aria-hidden="true"></span>
+    </button>
+    <button  *ngIf="session.is_logged_in"  class="btn btn-outline-primary" data-toggle="tooltip" data-placement="right" title="customize the randomness" (click)="onCustom()" >
       <span class="fa fa-cog" aria-hidden="true"></span>
     </button>
-    <button class="btn btn-outline-primary" data-toggle="tooltip" data-placement="right" title="see some analytics">
+    <button [hidden]="true"  class="btn btn-outline-primary" data-toggle="tooltip" data-placement="right" title="see some analytics">
       <span class="fa fa-pie-chart" aria-hidden="true"></span>
     </button>
-    <button class="btn btn-outline-primary" data-toggle="tooltip" data-placement="right" title="tweet the poem">
+    <button [hidden]="true"  class="btn btn-outline-primary" data-toggle="tooltip" data-placement="right" title="tweet the poem">
       <span class="fa fa-twitter" aria-hidden="true"></span>
     </button>
-    <button class="btn btn-outline-primary" data-toggle="tooltip" data-placement="right" title="email the poem">
+    <button [hidden]="true"  class="btn btn-outline-primary" data-toggle="tooltip" data-placement="right" title="email the poem">
       <span class="fa fa-envelope-o" aria-hidden="true"></span>
     </button>
-    <button class="btn btn-outline-primary" data-toggle="tooltip" data-placement="right" title="about random poetry">
-        <span class="fa fa-info-circle" aria-hidden="true"></span>
-      </button>
+    <button class="btn btn-outline-primary" data-toggle="tooltip" data-placement="right" title="about random poetry" (click)="onAbout()">
+      <span class="fa fa-info-circle" aria-hidden="true"></span>
+    </button>
   </div>
 </div>
+<div class="modal fade" id="randomConfig" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4>custom criterias</h4>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="col-form-label" for="tags">valid tags</label>
+            <input type="text" class="form-control" placeholder="enter list of tags separated by comma" id="tags">
+          </div>
+          <div class="form-group">
+              <label class="col-form-label" for="author_name">author name</label>
+              <input type="text" class="form-control" placeholder="enter name of author" id="author_name">
+            </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-dismiss="modal">ok</button>
+          <button type="button" class="btn btn-cancel" data-dismiss="modal">cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>

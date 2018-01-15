@@ -1,27 +1,38 @@
 <div *ngIf="session.is_logged_in === false; else showDashboard">
   <div class="card-body bg-light" style="text-align: center">
-    <h3>guidelines</h3>
-    <pre style="border-style: none">
-      lorem ipsum dolor sit amet, nominavi 
-      mnesarchum complectitur ei eum, velit graecis 
-      vix et. at vim alienum expetenda. 
-      et nisl dicunt prompta pri, est an albucius 
-      adolescens. malorum suscipit et duo, et 
-      corpora deserunt mei. et vel mutat aeque 
-      dolores, sea iusto nostrud sadipscing an. 
-      eos decore detraxit evertitur ea, ne homero 
-      forensibus vel.
+    <h3>welcome</h3>
+    <pre style="border-style: none; ">
+random poetry does not store your personal 
+information on our servers. 
+the social media logins are required to 
+verify your identity.
     </pre>
     <button (click)="onGoogleLogin()" class="btn btn-outline-primary">
       <span class="fa fa-google"></span> google
-    </button><br/>
+    </button>
+    <br/>
     <button (click)="onGoogleLogin()" class="btn btn-outline-primary">
       <span class="fa fa-facebook"></span> facebook
-    </button><br/>
+    </button>
+    <br/><br/>
+    <pre style="border-style: none; white-space: pre-wrap">
+once logged in, you may submit an originally written 
+poem to the site. you will retain your rights as the 
+owner of the piece.you can remove the poem anytime 
+on this site. we won't edit your piece.
+
+you are also allowed to share poems written by someone 
+else. make sure that the name of the author is provided.
+
+we reserve the right to remove a poem submitted to the 
+site if we think it violates a copyright, received complaints, 
+or it contains text that is not appropriate to be 
+shared on the internet.
+    </pre>
   </div>
 </div>
 <ng-template #showDashboard>
-  <div class="card-body bg-light dashboard" >
+  <div class="card-body bg-light dashboard">
     <div class="row">
       <div class="col-12" style="text-align: left; color: black">
         <h5>{{session.user_name}}</h5>
@@ -29,7 +40,7 @@
       </div>
     </div>
     <br/>
-    <div class="row" >
+    <div class="row">
       <div class="container row">
         <div class="col-10" style="text-align:left">
           <h5>list of submitted poems</h5>
@@ -43,14 +54,12 @@
 
       <div style="padding:10px;width:100%; height: 400px; overflow-y:scroll">
         <ul class="list-group">
-          <li class="list-group-item d-flex justify-content-between align-items-center" 
-              style="padding:10px;text-align:left" 
-              *ngFor="let poem of poem_list" 
-              (click)="showPoem(poem)">
+          <li class="list-group-item d-flex justify-content-between align-items-center" style="padding:10px;text-align:left" *ngFor="let poem of poem_list"
+            (click)="showPoem(poem)">
             {{poem.title}}
-            
-                <small>{{getPoemStatus(poem.published, poem.public, poem.own_poem)}}</small>
-            
+
+            <small>{{getPoemStatus(poem.published, poem.public, poem.own_poem)}}</small>
+
           </li>
         </ul>
       </div>
