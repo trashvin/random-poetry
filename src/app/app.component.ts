@@ -7,6 +7,8 @@ import { SessionService, StorageService, StitchService, AlertService } from "./_
 import { AppConstants } from "./app.constant";
 import { Logger } from "./_shared/libraries/logger";
 
+declare var $: any;
+
 @Component({
   selector: "app-root",
   templateUrl: "./app.component.html",

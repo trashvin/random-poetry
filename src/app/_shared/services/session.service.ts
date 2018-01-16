@@ -3,6 +3,7 @@ import { Injectable } from "@angular/core";
 @Injectable()
 export class SessionService {
   constructor() {
+    this.filter_tags = "";
   }
   getValue(key: string) {
     return sessionStorage.getItem(key);
@@ -83,6 +84,20 @@ export class SessionService {
   public get user_picture(): string {
     return this.getValue("user_picture");
   }
+  public set filter_tags(value: string) {
+    this.setValue("filter_tags", value);
+  }
+  public get filter_tags(): string {
+    return this.getValue("filter_tags");
+  }
+  public get is_filtered(): boolean {
+    if ( this.getValue("filter_tags") !== "" ) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   public clear() {
     sessionStorage.clear();
   }

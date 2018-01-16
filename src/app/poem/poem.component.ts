@@ -5,11 +5,14 @@ import { Subject } from "rxjs/Subject";
 import "rxjs/Rx";
 import { Router, ActivatedRoute } from "@angular/router";
 
-import { SessionService, StitchService } from "../_shared/services/service";
+import { SessionService, StitchService, StorageService } from "../_shared/services/service";
 import { Logger } from "../_shared/libraries/logger";
 import { Poem } from "../_shared/models/poem";
 import { AppConstants } from "../app.constant";
 import { AppComponent } from "../app.component";
+
+declare var $: any;
+
 @Component({
   selector: "app-poem",
   templateUrl: "./poem.component.html",
@@ -27,6 +30,8 @@ export class PoemComponent implements OnInit, OnDestroy {
   date: string;
   tags: string[];
   shares = 0;
+  own_poem = true;
+  filter_tags= this.storage.filter_tags;
   like_subject = new Subject<number>();
   observable_likes = this.like_subject.asObservable().debounceTime(1000);
   implemented = false;
@@ -36,12 +41,13 @@ export class PoemComponent implements OnInit, OnDestroy {
     private stitch: StitchService,
     public session: SessionService,
     private router: Router,
-    private constant: AppConstants
+    private constant: AppConstants,
+    public storage: StorageService
   ) {
   }
   ngOnInit() {
     this.log.i("Poem Component init");
-    this.stitch.getRandomPoem();
+    this.stitch.getRandomPoem(null);
     this.log.l("Subscribing...");
     this.subscriber = this.stitch.observable_random_poem.subscribe(res => {
       this.log.raw(res);
@@ -54,6 +60,7 @@ export class PoemComponent implements OnInit, OnDestroy {
         this.tags = res.tags;
         this.likes = res.likes !== undefined ? res.likes : 0;
         this.shares = res.shares !== undefined ? res.shares : 0;
+        this.own_poem = res.own_poem;
       } catch (err) {
         this.log.e(err);
       }
@@ -74,7 +81,7 @@ export class PoemComponent implements OnInit, OnDestroy {
     return temp;
   }
   onNext() {
-    this.stitch.getRandomPoem();
+    this.stitch.getRandomPoem(this._id);
   }
   onHeart() {
     this.increased += 1;
@@ -116,11 +123,17 @@ export class PoemComponent implements OnInit, OnDestroy {
   onAbout() {
     this.router.navigate(["about"]);
   }
+  onHome() {
+    this.router.navigate(["poem"]);
+  }
   onCustom() {
     $(#randomConfig).modal("show");
   }
   ngOnDestroy(): void {
     this.subscriber.unsubscribe();
+  }
+  setFilterTags() {
+    this.storage.filter_tags = this.filter_tags;
   }
 
 }

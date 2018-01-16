@@ -5,7 +5,6 @@ div.spacer-h50 {
 div.main-view {
   display: flex;
   flex-flow: column;
-  height: 100vh;
   margin: 10px;
 }
 div.h-box {
@@ -17,6 +16,7 @@ div.h-box {
 body {
   height: 100%;
   background: white;
+  color: black;
 }
 div.poem {
   
@@ -44,4 +44,7 @@ img.small_logo {
 }
 img.circle {
   border-radius: 50%;
+}
+div.last {
+  position: relative;
 }

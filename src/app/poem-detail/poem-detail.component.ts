@@ -203,11 +203,12 @@ export class PoemDetailComponent implements OnInit {
     return result;
   }
   stringToArray(data) {
+    // data = data.map( word => word.trim());
     let tags = [];
     if (data !== undefined && data !== null) {
       tags = data.split(";");
     }
-    return tags;
+    return tags.map(tag => tag.trim());
   }
   // private stringToArray(data) {
   //   let tags = [];

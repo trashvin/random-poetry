@@ -3,7 +3,9 @@ import { Injectable } from "@angular/core";
 @Injectable()
 export class StorageService {
 
-  constructor() { }
+  constructor() {
+    this.filter_tags = "";
+   }
   getValue(key: string) {
     return localStorage.getItem(key);
   }
@@ -27,6 +29,19 @@ export class StorageService {
   }
   public get user_picture(): string {
     return this.getValue("user_picture");
+  }
+  public set filter_tags(value: string) {
+    this.setValue("filter_tags", value);
+  }
+  public get filter_tags(): string {
+    return this.getValue("filter_tags");
+  }
+  public get is_filtered(): boolean {
+    if ( this.getValue("filter_tags") !== "" ) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
 }

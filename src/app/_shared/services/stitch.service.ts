@@ -90,7 +90,7 @@ export class StitchService {
     this.log.functionName = "addPoem";
     this.log.i("Add new poem");
     this.log.raw(new_poem);
-    new_poem.author = new_poem.own_poem === true ? this.storage.user_name : new_poem.author;
+    new_poem.author = new_poem.own_poem === true ? this.session.user_name : new_poem.author;
 
     const entry = {
       owner_id: this.client.authedId(),
@@ -199,7 +199,7 @@ export class StitchService {
       this.log.e(err);
     }
   }
-  getRandomPoem() {
+  getRandomPoem(prev_id) {  // any number
     this.log.functionName = "getRandomPoem";
     this.log.i("Getting random poem");
     try {
@@ -207,8 +207,15 @@ export class StitchService {
         this.doLoginAnonymous();
       }
       this.session.is_busy = true;
+      let filters = [];
+      if ( this.storage.is_filtered) {
+        filters = this.stringToArray(this.storage.filter_tags);
+      } else {
+        filters = null;
+      }
+      this.log.l(filters);
       this.client
-        .executeFunction("getRandomPoem")
+        .executeFunction("getRandomPoemByTags", filters, prev_id)
         .then(result => {
           this.log.i("Random poem fetched.");
           const poem = {
@@ -257,6 +264,6 @@ export class StitchService {
     if (data !== undefined && data !== null) {
       tags = data.split(";");
     }
-    return tags;
+    return tags.map(tag => tag.trim());
   }
 }
