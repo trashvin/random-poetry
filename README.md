@@ -8,7 +8,9 @@ liking a poem for authenticated users. It supports Google and Facebook login.
 # Technology Used
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.5.0.
+
 This project uses [Bootstrap](https://getbootstrap.com/) version 4.0.
+
 This project uses [MongoDB Stitch](https://stitch.mongodb.com/) api v2.0.
 
 # Status
