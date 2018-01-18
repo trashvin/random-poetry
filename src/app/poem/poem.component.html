@@ -3,8 +3,9 @@
   <p>{{author}}</p>
   <small>
     {{likes}}
-    <span class="fa fa-heart" aria-hidden="true" style="color:#F44336"></span> | {{shares}}
-    <span class="fa fa-share-alt" aria-hidden="true" style="color:black"></span>
+    <span class="fa fa-heart" aria-hidden="true" style="color:#F44336"></span>
+     <!-- | {{shares}}
+    <span class="fa fa-share-alt" aria-hidden="true" style="color:black"></span> -->
   </small>
   <div>
     <span class="badge badge-pill badge-secondary" style="margin: 2px" *ngFor="let tag of tags">
@@ -22,16 +23,19 @@
     it violates any copyrights, email us at kafenatedmail [at] gmail.com
   </small>
 </div>
-<div class="floating align-middle">
+<div class="floating" style="top:10px">
   <div class="btn-group-vertical">
-    <button *ngIf="session.is_logged_in" class="btn btn-outline-primary" (click)="onHeart()" data-toggle="tooltip" data-placement="right"
+    <button class="btn btn-outline-primary" (click)="onHeart()" data-toggle="tooltip" data-placement="right"
       title="send your love multiple times">
       <span class="fa fa-heart" aria-hidden="true" style="color:#F44336"></span>
     </button>
     <button class="btn btn-outline-primary" (click)="onNext()" data-toggle="tooltip" data-placement="right" title="next random poem">
       <span class="fa fa-step-forward" aria-hidden="true"></span>
     </button>
-    <button *ngIf="session.is_logged_in" class="btn btn-outline-primary" data-toggle="tooltip" data-placement="right" title="add a poem"
+    <button [hidden]="true" class="btn btn-outline-primary" data-toggle="tooltip" data-placement="right" title="email the poem">
+      <span class="fa fa-envelope-o" aria-hidden="true"></span>
+    </button>
+    <button *ngIf="storage.is_logged_in" class="btn btn-outline-primary" data-toggle="tooltip" data-placement="right" title="add a poem"
       (click)="onAdd()">
       <span class="fa fa-plus" aria-hidden="true"></span>
     </button>
@@ -44,15 +48,22 @@
     <button [hidden]="true" class="btn btn-outline-primary" data-toggle="tooltip" data-placement="right" title="tweet the poem">
       <span class="fa fa-twitter" aria-hidden="true"></span>
     </button>
-    <button [hidden]="true" class="btn btn-outline-primary" data-toggle="tooltip" data-placement="right" title="email the poem">
-      <span class="fa fa-envelope-o" aria-hidden="true"></span>
+    <button *ngIf="storage.is_logged_in === true" class="btn btn-outline-primary" data-toggle="tooltip" data-placement="right" title="my profile" (click)="onProfile()">
+      <span class="fa fa-user-circle-o" aria-hidden="true"></span>
+    </button>
+    <button *ngIf="storage.is_logged_in !== true" class="btn btn-outline-primary" data-toggle="tooltip" data-placement="right" title="sign in" (click)="onLogin()">
+      <span class="fa fa-sign-in" aria-hidden="true"></span>
+    </button>
+    <button *ngIf="storage.is_logged_in === true" class="btn btn-outline-primary" data-toggle="tooltip" data-placement="right" title="sign out" (click)="onLogout()">
+      <span class="fa fa-sign-out" aria-hidden="true"></span>
     </button>
     <button class="btn btn-outline-primary" data-toggle="tooltip" data-placement="right" title="about random poetry" (click)="onAbout()">
       <span class="fa fa-info-circle" aria-hidden="true"></span>
     </button>
   </div>
 </div>
-<div class="modal fade" id="randomConfig" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="backdrop" [ngStyle]="{'display':display}"></div>
+<div class="modal" id="randomConfig" tabindex="-1" role="dialog" [ngStyle]="{'display':display}">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -60,13 +71,19 @@
       </div>
       <div class="modal-body">
         <div class="form-group">
-          <label class="col-form-label" for="tags">filter tags</label>
-          <input type="text" class="form-control" placeholder="enter list of tags separated by semi-colon" id="tags" [(ngModel)]="filter_tags">
+          <label class="col-form-label" for="tags">filter tags (semicolon seperated)</label>
+          <div class="input-group mb-3">
+            <input type="text" class="form-control" placeholder="enter list of tags separated by semi-colon" id="tags" [(ngModel)]="filter_tags">
+            <button class="btn btn-primary" (click)="clearFilters()">
+              <span class="fa fa-eraser"></span>
+            </button>
+          </div>
+          
         </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="setFilterTags()">ok</button>
-        <button type="button" class="btn btn-cancel" data-dismiss="modal">cancel</button>
+        <button type="button" class="btn btn-cancel" data-dismiss="modal" (click)="onCancel()">cancel</button>
       </div>
     </div>
   </div>

@@ -37,6 +37,7 @@ export class StitchService {
     this.online = this.connect();
   }
   private connect() {
+    this.log.functionName = "connect";
     if (this.client !== undefined) {
       this.db = this.client
         .service("mongodb", "mongodb-atlas")
@@ -50,8 +51,8 @@ export class StitchService {
     }
   }
   doLoginAnonymous() {
-    this.session.is_anonymous = true;
-    // this.session.is_logged_in = false;
+    this.storage.is_anonymous = true;
+    // this.storage.is_logged_in = false;
     return this.client.login();
   }
   doLoginGoogle() {
@@ -66,12 +67,24 @@ export class StitchService {
   isAuthenticated(): boolean {
     this.log.functionName = "isAuthenticated";
     let result = false;
-    if ( this.session.is_anonymous === false ) {
-      if (this.client.authedId() !== undefined) { // && this.session.is_anonymous === false) {
-        this.log.i("Authed Id:" + this.client.authedId());
-        result = true;
+    // if ( this.storage.is_anonymous === false ) {
+      try {
+        this.log.l("Checking autheId");
+        if ( this.storage.is_anonymous === false) {
+          if (this.client.authedId() !== undefined && this.client.authedId() !== null) { // && this.storage.is_anonymous === false) {
+            // check if not anonymous
+              this.log.i("Authed Id:" + this.client.authedId());
+              result = true;
+            }
+        } else {
+          this.log.l("Anonymous user");
+          result = false;
+        }
+      } catch (err) {
+        this.log.w(err);
+        return false;
       }
-    }
+    // }
     this.log.l(`Result : ${result}`);
     return result;
   }
@@ -90,7 +103,7 @@ export class StitchService {
     this.log.functionName = "addPoem";
     this.log.i("Add new poem");
     this.log.raw(new_poem);
-    new_poem.author = new_poem.own_poem === true ? this.session.user_name : new_poem.author;
+    new_poem.author = new_poem.own_poem === true ? this.storage.user_name : new_poem.author;
 
     const entry = {
       owner_id: this.client.authedId(),
@@ -135,7 +148,7 @@ export class StitchService {
     this.log.functionName = "getPoems";
     this.log.i("Getting poems");
     try {
-      this.session.is_busy = true;
+      this.storage.is_busy = true;
       this.client
         .executeFunction("getListOfSubmittedPoems")
         .then(result => {
@@ -152,11 +165,11 @@ export class StitchService {
           });
           const data = this.poem_list.slice();
           this.poems_subject.next(data);
-          this.session.is_busy = false;
+          this.storage.is_busy = false;
 
         })
         .catch(err => {
-          this.session.is_busy = false;
+          this.storage.is_busy = false;
           this.log.e(err);
         });
     } catch (err) {
@@ -167,7 +180,7 @@ export class StitchService {
     this.log.functionName = "getPoem";
     this.log.i(`Getting poem ${poem_id}`);
     try {
-      this.session.is_busy = true;
+      this.storage.is_busy = true;
       this.poem_subject.next(null);
       this.client
         .executeFunction("getPoem", poem_id)
@@ -189,24 +202,26 @@ export class StitchService {
             shares: result.shares
           };
           this.poem_subject.next(poem);
-          this.session.is_busy = false;
+          this.storage.is_busy = false;
         })
         .catch(err => {
-          this.session.is_busy = false;
+          this.storage.is_busy = false;
           this.log.e(err);
         });
     } catch (err) {
       this.log.e(err);
+      this.storage.is_busy = false;
     }
   }
   getRandomPoem(prev_id) {  // any number
     this.log.functionName = "getRandomPoem";
     this.log.i("Getting random poem");
     try {
-      if (this.isAuthenticated() === false) {
+      prev_id = (prev_id === null) ? "5a5c60a68f25b906c03eb928" : prev_id;
+      if (this.isAuthenticated() === false || this.isAuthenticated() === null) {
         this.doLoginAnonymous();
       }
-      this.session.is_busy = true;
+      this.storage.is_busy = true;
       let filters = [];
       if ( this.storage.is_filtered) {
         filters = this.stringToArray(this.storage.filter_tags);
@@ -236,14 +251,15 @@ export class StitchService {
           };
           // this.log.raw(poem);
           this.random_poem_subject.next(poem);
-          this.session.is_busy = false;
+          this.storage.is_busy = false;
         })
         .catch(err => {
-          this.session.is_busy = false;
+          this.storage.is_busy = false;
           this.log.e(err);
         });
     } catch (err) {
       this.log.e(err);
+      this.storage.is_busy = false;
     }
   }
   arrayToString(data): string {
@@ -256,7 +272,7 @@ export class StitchService {
           result += element + " ; ";
         });
       }
-    } 
+    }
     return result;
   }
   stringToArray(data) {
@@ -264,6 +280,6 @@ export class StitchService {
     if (data !== undefined && data !== null) {
       tags = data.split(";");
     }
-    return tags.map(tag => tag.trim());
+    return tags.map(tag => tag.trim().toLowerCase());
   }
 }

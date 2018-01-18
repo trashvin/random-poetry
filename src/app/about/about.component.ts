@@ -1,4 +1,5 @@
 import { Component, OnInit } from "@angular/core";
+import { Router } from "@angular/router";
 
 import { environment } from "../../environments/environment";
 
@@ -9,8 +10,18 @@ import { environment } from "../../environments/environment";
 })
 export class AboutComponent implements OnInit {
   version;
-  constructor() {
+  constructor( private router: Router) {
     this.version = environment.version;
+   }
+   onHome() {
+    this.router.navigate(["poem"]);
+   }
+   gotoGithubRepo() {
+     window.open("https://github.com/trashvin/random-poetry", "_blank");
+   }
+   reportBug() {
+     // https://github.com/trashvin/random-poetry/issues
+     window.open("https://github.com/trashvin/random-poetry/issues", "_blank");
    }
   ngOnInit() {
   }

@@ -1,5 +1,5 @@
 <!--The content below is only a placeholder and can be replaced.-->
-<nav class="pl-4 pr-2 pt-2 pb-0 navbar-expand"  >
+<!-- <nav class="pl-4 pr-2 pt-2 pb-0 navbar-expand"  >
   <div class="row">
     <a class="navbar-brand" href="#">
       random poetry
@@ -33,15 +33,15 @@
       </ul>
     </div>
   </div>
-</nav>
+</nav> -->
 <!-- <div class="spacer-h50"></div> -->
 <div class="main-view">
   <router-outlet></router-outlet>
 </div>
-<div class="spinner" *ngIf="session.is_busy">
+<div class="spinner" *ngIf="storage.is_busy">
   <span class="fa fa-spinner fa-spin fa-5x" style="font-size:70px;color:gray"></span>
 </div>
-<div class="modal fade" id="alertBox" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="modal" id="alertBox" tabindex="-1" role="dialog" aria-hidden="true" [ngStyle]="{'display':display}">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -51,57 +51,8 @@
         {{alert_message}}
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary" data-dismiss="modal">ok</button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="dismissAlert()">ok</button>
       </div>
     </div>
   </div>
 </div>
-
-<!-- <div class="h-box">
-  <div class="row">
-    <div class="col-2 d-none d-sm-block">
-    </div>
-    <div class="col-12 col-sm-8">
-      <div class="card poem bg-primary text-white">
-        <div class="card-header">
-          <div class="row">
-            <div class="col-7" style="vertical-align: middle">
-              <span *ngIf="session.is_home !== true" (click)="onBack()" class="fa fa-chevron-left" aria-hidden="true"></span>
-              <a (click)="onHome()" class="navbar-brand" style="cursor: default">Random Poetry</a>
-            </div>
-            <div class="col-5" style="text-align:right; vertical-align: middle">
-              <button *ngIf="session.is_logged_in === true" (click)="onAdd()" class="btn btn-primary">
-                <span class="fa fa-plus" aria-hidden="true"></span>
-              </button>
-            </div>
-          </div>
-        </div>
-        <div>
-          <router-outlet></router-outlet>
-        </div>
-        <div class="card-footer">
-          <div class="row p-0" style="justify-content: center; display:flex">
-            <div class="col-2">
-              <button (click)="onSettings()" class="btn btn-primary">
-                <span class="fa fa-cog" aria-hidden="true"></span>
-              </button>
-            </div>
-            <div class="col-8" style="text-align: center">
-              <button (click)="onNext()" class="btn btn-primary">
-                <span class="fa fa-arrow-right" aria-hidden="true"></span>
-              </button>
-            </div>
-            <div class="col-2">
-              <button (click)="onLogin()" class="btn btn-primary float-right">
-                <span class="fa fa-user" aria-hidden="true"></span>
-              </button>
-            </div>
-          </div>
-        </div>
-
-      </div>
-    </div>
-    <div class="col-2 d-none d-sm-block">
-    </div>
-  </div>
-</div> -->

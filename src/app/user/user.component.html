@@ -1,4 +1,4 @@
-<div *ngIf="session.is_logged_in === false; else showDashboard">
+<div *ngIf="storage.is_logged_in === false; else showDashboard">
   <div class="card-body bg-light" style="text-align: center">
     <h3>welcome</h3>
     <pre style="border-style: none; ">
@@ -34,9 +34,9 @@ shared on the internet.
 <ng-template #showDashboard>
   <div class="card-body bg-light dashboard">
     <div class="row">
-      <div class="col-12" style="text-align: left; color: black">
-        <h5>{{session.user_name}}</h5>
-        <h6>{{session.user_email}}</h6>
+      <div class="col-10" style="text-align: left; color: black">
+        <h5>{{storage.user_name}}</h5>
+        <h6>{{storage.user_email}}</h6>
       </div>
     </div>
     <br/>
@@ -44,11 +44,6 @@ shared on the internet.
       <div class="container row">
         <div class="col-10" style="text-align:left">
           <h5>list of submitted poems</h5>
-        </div>
-        <div class="col-2" style="text-align:right">
-          <button class="btn" (click)="onAdd()">
-            <span class="fa fa-plus" aria-hidden="true"></span>
-          </button>
         </div>
       </div>
 
@@ -67,3 +62,18 @@ shared on the internet.
   </div>
 
 </ng-template>
+<div class="floating" style="top:10px">
+  <div class="btn-group-vertical">
+    <button class="btn btn-outline-primary" (click)="onHome()" data-toggle="tooltip" data-placement="right"
+      title="back to poems">
+      <span class="fa fa-home" aria-hidden="true" ></span>
+    </button>
+    <button *ngIf="storage.is_logged_in" class="btn btn-outline-primary" data-toggle="tooltip" data-placement="right" title="add a poem"
+      (click)="onAdd()">
+      <span class="fa fa-plus" aria-hidden="true"></span>
+    </button>
+    <button *ngIf="storage.is_logged_in === true" class="btn btn-outline-primary" data-toggle="tooltip" data-placement="right" title="sign out" (click)="onLogout()">
+      <span class="fa fa-sign-out" aria-hidden="true"></span>
+    </button>
+  </div>
+</div>

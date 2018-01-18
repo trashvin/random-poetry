@@ -1,11 +1,11 @@
-import { Component, OnInit, ChangeDetectorRef, OnDestroy } from "@angular/core";
+import { Component, OnInit, ChangeDetectorRef, OnDestroy, Renderer2, ViewChild, ElementRef } from "@angular/core";
 import { Subscription } from "rxjs/Subscription";
 import { Observable } from "rxjs/Observable";
 import { Subject } from "rxjs/Subject";
 import "rxjs/Rx";
 import { Router, ActivatedRoute } from "@angular/router";
 
-import { SessionService, StitchService, StorageService } from "../_shared/services/service";
+import { StitchService, StorageService } from "../_shared/services/service";
 import { Logger } from "../_shared/libraries/logger";
 import { Poem } from "../_shared/models/poem";
 import { AppConstants } from "../app.constant";
@@ -20,6 +20,7 @@ declare var $: any;
 })
 export class PoemComponent implements OnInit, OnDestroy {
   private log = new Logger("Poem", "Component");
+  display = "none";
   subscriber: Subscription;
   likes: number;
   increased = 0;
@@ -39,10 +40,10 @@ export class PoemComponent implements OnInit, OnDestroy {
   constructor(
     private change_detector: ChangeDetectorRef,
     private stitch: StitchService,
-    public session: SessionService,
-    private router: Router,
+   private router: Router,
     private constant: AppConstants,
-    public storage: StorageService
+    public storage: StorageService,
+    private renderer: Renderer2
   ) {
   }
   ngOnInit() {
@@ -52,6 +53,7 @@ export class PoemComponent implements OnInit, OnDestroy {
     this.subscriber = this.stitch.observable_random_poem.subscribe(res => {
       this.log.raw(res);
       try {
+        if (res !== null) {
         this._id = res._id;
         this.title = res.title;
         this.poem = res.poem;
@@ -61,6 +63,9 @@ export class PoemComponent implements OnInit, OnDestroy {
         this.likes = res.likes !== undefined ? res.likes : 0;
         this.shares = res.shares !== undefined ? res.shares : 0;
         this.own_poem = res.own_poem;
+        } else {
+          this.log.w("Result is null");
+        }
       } catch (err) {
         this.log.e(err);
       }
@@ -69,6 +74,10 @@ export class PoemComponent implements OnInit, OnDestroy {
       this.log.l(res);
       this.updateHeart();
     });
+    if ( this._id === null) {
+      this.log.l("try..");
+      this.stitch.getRandomPoem(null);
+    }
   }
   toArrayOfTags(tags: string) {
     let temp = [];
@@ -116,8 +125,7 @@ export class PoemComponent implements OnInit, OnDestroy {
     };
   }
   onAdd() {
-    this.session.current_action = this.constant.action_add;
-    this.session.is_home = false;
+    this.storage.current_action = this.constant.action_add;
     this.router.navigate(["details"]);
   }
   onAbout() {
@@ -127,13 +135,65 @@ export class PoemComponent implements OnInit, OnDestroy {
     this.router.navigate(["poem"]);
   }
   onCustom() {
-    $(#randomConfig).modal("show");
+    // $(#randomConfig).modal("show");
+    this.display = "block";
+    // this.dialog.nativeElement.modal("show");
   }
   ngOnDestroy(): void {
     this.subscriber.unsubscribe();
   }
   setFilterTags() {
+    this.display = "none";
     this.storage.filter_tags = this.filter_tags;
+    this.stitch.getRandomPoem(null);
+  }
+  clearFilters() {
+    this.filter_tags = "";
+    // this.storage.filter_tags = "";
+  }
+  onCancel() {
+    this.display = "none";
+  }
+  onProfile() {
+    this.router.navigate(["user"]);
+  }
+  onLogin() {
+    // logout current user
+    try {
+      this.stitch.doLogout().then( res => {
+        this.log.l(res);
+        this.storage.is_anonymous = false;
+        this.router.navigate(["user"]);
+      }).catch( err => this.log.w(err));
+    } catch (err) {
+      this.router.navigate(["user"]);
+    } 
+  }
+  onLogout() {
+    if (this.storage.is_logged_in) {
+      this.stitch.doLogout().then(() => {
+        this.storage.is_logged_in = false;
+        this.storage.clear();
+        this.storage.is_anonymous = false;
+        this.router.navigate(["/"]);
+      }). catch( err => {
+        this.log.l("Failed logout");
+        this.log.e(err);
+      });
+    } else {
+      this.stitch.doLoginAnonymous().then( res => {
+        this.log.l(res);
+        this.stitch.doLogout().then(() => {
+          this.storage.is_logged_in = false;
+          this.storage.clear();
+          this.storage.is_anonymous = false;
+          this.router.navigate(["/"]);
+        }). catch( err => {
+          this.log.l("Failed logout");
+          this.log.e(err);
+        });
+      });
+    }
   }
 
 }

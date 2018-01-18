@@ -7,7 +7,7 @@ import { Subscription } from "rxjs/Subscription";
 
 import { AppConstants } from "../app.constant";
 import { Logger } from "../_shared/libraries/logger";
-import { StitchService, SessionService, AlertService } from "../_shared/services/service";
+import { StitchService, AlertService, StorageService } from "../_shared/services/service";
 import { Poem } from "../_shared/models/poem";
 
 @Component({
@@ -25,6 +25,7 @@ export class PoemDetailComponent implements OnInit {
   title;
   view_label = "";
   poem = new Poem();
+  display = "none";
   // title = new FormControl();
   // poem = new FormControl();
   // receipient = new FormControl();
@@ -36,13 +37,13 @@ export class PoemDetailComponent implements OnInit {
     private stitch: StitchService,
     private router: Router,
     private route: ActivatedRoute,
-    private session: SessionService
+    public storage: StorageService
   ) { }
 
   ngOnInit() {
     this.buildForm();
     try {
-      if (this.session.current_action !== this.constant.action_add) {
+      if (this.storage.current_action !== this.constant.action_add) {
         this.subscriber = this.route.params.subscribe(params => {
           this.stitch.observable_poem.subscribe(result => {
             this.log.l("Received...");
@@ -69,7 +70,7 @@ export class PoemDetailComponent implements OnInit {
     this.log.l(JSON.stringify(this.detail_form.value));
     this.log.l(this.detail_form.status);
     if (this.detail_form.status === "VALID") {
-      if (this.session.current_action === this.constant.action_add) {
+      if (this.storage.current_action === this.constant.action_add) {
         this.log.i("Saving new poem...");
         this.addPoem();
       } else {
@@ -85,15 +86,15 @@ export class PoemDetailComponent implements OnInit {
     try {
       this.allow_edit = false;
       this.getFormValue();
-      this.session.is_busy = true;
+      this.storage.is_busy = true;
       this.stitch.addPoem(this.poem).then(result => {
         this.log.i("New poem saved.");
-        this.session.is_busy = false;
+        this.storage.is_busy = false;
         this.alert.sendMessage("New poem saved!");
         this.router.navigate(["user"]);
       }).catch(err => {
         this.log.e("Error saving poem");
-        this.session.is_busy = false;
+        this.storage.is_busy = false;
         this.alert.sendMessage("Error saving new poem.");
         this.allow_edit = true;
       });
@@ -104,35 +105,41 @@ export class PoemDetailComponent implements OnInit {
   updatePoem() {
     const changes = this.getChangedFields();
     this.allow_edit = false;
-    this.session.is_busy = true;
+    this.storage.is_busy = true;
     this.stitch.updatePoem(this._id, changes).then( result => {
       this.log.i("Changes saved.");
-      this.session.is_busy = false;
+      this.storage.is_busy = false;
       this.alert.sendMessage("Updated poem!");
       this.router.navigate(["user"]);
     }).catch(err => {
       this.log.e("Error saving poem");
-      this.session.is_busy = false;
+      this.storage.is_busy = false;
       this.alert.sendMessage("Error saving updated poem.");
       this.allow_edit = true;
+      this.storage.is_busy = false;
     });
   }
   onDelete() {
-    $(#confirmBox).modal("show");
+    this.display = "block";
   }
   deletePoem() {
-    this.session.is_busy = true;
+    this.storage.is_busy = true;
       this.stitch.deletePoem(this._id).then( result => {
         this.log.i("Successfully deleted poem.");
-        this.session.is_busy = false;
+        this.storage.is_busy = false;
         this.alert.sendMessage("Successfully deleted poem.");
         this.router.navigate(["user"]);
       }).catch(err => {
         this.log.e("Error deleting poem");
-        this.session.is_busy = false;
+        this.storage.is_busy = false;
         this.alert.sendMessage("Error deleting poem.");
         this.allow_edit = true;
+        this.storage.is_busy = false;
       });
+      this.display = "none";
+  }
+  onCancelDelete() {
+    this.display = "none";
   }
   private setFormValue(result) {
     this.log.l(result.title);
@@ -177,7 +184,7 @@ export class PoemDetailComponent implements OnInit {
       if (this.detail_form.get(key).dirty) {
         if (key === "own_poem") {
           if (result[key]) {
-            result["author"] = this.session.user_name;
+            result["author"] = this.storage.user_name;
           } else {
             result["author"] = this.detail_form.get("author").value;
           }
@@ -208,7 +215,7 @@ export class PoemDetailComponent implements OnInit {
     if (data !== undefined && data !== null) {
       tags = data.split(";");
     }
-    return tags.map(tag => tag.trim());
+    return tags.map(tag => tag.trim().toLowerCase());
   }
   // private stringToArray(data) {
   //   let tags = [];

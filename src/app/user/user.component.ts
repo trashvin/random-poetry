@@ -3,7 +3,7 @@ import { Router, ActivatedRoute } from "@angular/router";
 import { Subscription } from "rxjs/Subscription";
 
 import { AppConstants } from "../app.constant";
-import { SessionService, StitchService, StorageService } from "../_shared/services/service";
+import { StitchService, StorageService } from "../_shared/services/service";
 import { Logger } from "../_shared/libraries/logger";
 import { Poem } from "../_shared/models/poem";
 
@@ -21,7 +21,6 @@ export class UserComponent implements OnInit {
   poem_list: Poem[] = [];
   constructor(
     public storage: StorageService,
-    public session: SessionService,
     public stitch: StitchService,
     private router: Router,
     private route: ActivatedRoute,
@@ -34,11 +33,11 @@ export class UserComponent implements OnInit {
       const profile = this.route.snapshot.data[this.constant.resolved_profile];
       this.log.l("Checking if authenticated");
       if (this.stitch.isAuthenticated()) {
-        this.session.user_name = profile.data.name;
-        this.session.user_email = profile.data.email;
-        this.session.user_picture = profile.data.picture;
-        this.session.is_logged_in = true;
-        // this.session.is_anonymous = false;
+        this.storage.user_name = profile.data.name;
+        this.storage.user_email = profile.data.email;
+        this.storage.user_picture = profile.data.picture;
+        this.storage.is_logged_in = true;
+        // this.storage.is_anonymous = false;
         this.stitch.getPoems();
       }
       this.stitch.observable_poems.subscribe( result => {
@@ -57,16 +56,19 @@ export class UserComponent implements OnInit {
   }
   onLogout() {
     this.stitch.doLogout().then(() => {
-      this.session.is_logged_in = false;
-      this.session.clear();
+      this.storage.is_logged_in = false;
+      this.storage.clear();
+      this.storage.is_anonymous = false;
       this.router.navigate(["/"]);
     }). catch( err => {
       this.log.e(err);
     });
   }
+  onHome() {
+    this.router.navigate(["/"]);
+  }
   onAdd() {
-    this.session.current_action = this.constant.action_add;
-    this.session.is_home = false;
+    this.storage.current_action = this.constant.action_add;
     this.router.navigate(["details"]);
   }
   getPoemStatus(published: boolean, visible: boolean, orig: boolean): string {
@@ -77,7 +79,7 @@ export class UserComponent implements OnInit {
     return result;
   }
   showPoem(poem) {
-    this.session.current_action = this.constant.action_edit;
+    this.storage.current_action = this.constant.action_edit;
     this.router.navigateByUrl("/detail/" + poem._id);
     this.log.raw(poem);
   }

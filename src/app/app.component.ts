@@ -1,13 +1,11 @@
-import { Component } from "@angular/core";
+import { Component, ElementRef, Renderer2, ViewChild } from "@angular/core";
 import { Router, ActivatedRoute } from "@angular/router";
 import { Subscription, ISubscription } from "rxjs/Subscription";
 
 
-import { SessionService, StorageService, StitchService, AlertService } from "./_shared/services/service";
+import {  StorageService, StitchService, AlertService } from "./_shared/services/service";
 import { AppConstants } from "./app.constant";
 import { Logger } from "./_shared/libraries/logger";
-
-declare var $: any;
 
 @Component({
   selector: "app-root",
@@ -15,6 +13,7 @@ declare var $: any;
   styleUrls: ["./app.component.css"]
 })
 export class AppComponent {
+  display = "none";
   private log = new Logger("App", "Component");
   title = "random poetry";
   name: string;
@@ -24,51 +23,47 @@ export class AppComponent {
   constructor(
     private alert: AlertService,
     private stitch: StitchService,
-    private storage: StorageService,
+    public storage: StorageService,
     private constant: AppConstants,
     private router: Router,
-    public session: SessionService
+    private renderer: Renderer2
   ) {
     this.subscriber = this.alert.getMessage().subscribe( message => {
-      this.session.is_busy = false;
+      this.storage.is_busy = false;
       // window.alert(message.text);
       this.alert_message = message.text;
-      $(#alertBox).modal("show");
+      this.display = "block";
     });
-
-    session.is_home = true;
-    this.name = this.session.is_logged_in === true ? this.session.user_name : "guest";
-    this.pic_url = this.session.is_logged_in === true ? this.session.user_picture : "assets/user_small.jpg";
+    this.name = this.storage.is_logged_in === true ? this.storage.user_name : "guest";
+    this.pic_url = this.storage.is_logged_in === true ? this.storage.user_picture : "assets/user_small.jpg";
+  }
+  dismissAlert() {
+    this.display = "none";
   }
   onSignIn() {
-    this.session.is_home = false;
-    if ( this.session.is_anonymous === true) {
+    // if ( this.storage.is_anonymous === true) {
       this.stitch.doLogout().then(() => {
-        this.session.is_logged_in = false;
-        this.session.clear();
+        this.storage.is_logged_in = false;
+        this.storage.clear();
         this.router.navigate(["user"]);
       }). catch( err => {
         this.log.e(err);
       });
-    } else {
-      this.router.navigate(["user"]);
-    }
+    // } else {
+    //   this.router.navigate(["user"]);
+    // }
   }
   onSettings() {
-    this.session.is_home = false;
     this.router.navigate(["settings"]);
   }
   onAdd() {
-    this.session.current_action = this.constant.action_add;
-    this.session.is_home = false;
+    this.storage.current_action = this.constant.action_add;
     this.router.navigate(["details"]);
       }
   onBack() {
-    this.session.is_home = true;
     this.router.navigate(["/"]);
   }
   onHome() {
-    this.session.is_home = true;
     this.router.navigate(["/"]);
   }
   onDashboard() {
@@ -76,16 +71,16 @@ export class AppComponent {
   }
   onSignOff() {
     this.stitch.doLogout().then(() => {
-      this.session.is_logged_in = false;
-      this.session.clear();
+      this.storage.is_logged_in = false;
+      this.storage.clear();
       this.router.navigate(["/"]);
     }). catch( err => {
       this.log.e(err);
     });
   }
   getRawName() {
-    const name = this.session.user_name;
-    if ( this.session.is_logged_in ) {
+    const name = this.storage.user_name;
+    if ( this.storage.is_logged_in ) {
       return name.replace(/(\r\n|\n|\r)/gm, "");
     } else {
       return "guest";
