@@ -217,7 +217,7 @@ export class StitchService {
     this.log.functionName = "getRandomPoem";
     this.log.i("Getting random poem");
     try {
-      prev_id = (prev_id === null) ? "5a5c60a68f25b906c03eb928" : prev_id;
+      // prev_id = (prev_id === null) ? null : prev_id;
       if (this.storage.is_anonymous === false && this.isAuthenticated() === false) {
             this.doLoginAnonymous().then( res => {
             this.log.l(res);
