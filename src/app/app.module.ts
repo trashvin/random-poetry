@@ -7,7 +7,7 @@ import { ReactiveFormsModule } from "@angular/forms";
 
 import { environment } from "../environments/environment";
 import { AppComponent } from "./app.component";
-import { StitchService, AlertService, SessionService, StorageService } from "./_shared/services/service";
+import { StitchService, AlertService, SessionService, StorageService, PoemGuardService } from "./_shared/services/service";
 import { PoemComponent } from "./poem/poem.component";
 import { AppRoutes } from "./app.route";
 import { SettingsComponent } from "./settings/settings.component";
@@ -41,7 +41,8 @@ import { AboutComponent } from "./about/about.component";
     AppConstants,
     ProfileResolver,
     StorageService,
-    PoemResolver
+    PoemResolver,
+    PoemGuardService
   ],
   bootstrap: [AppComponent]
 })

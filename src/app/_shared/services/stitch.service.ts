@@ -218,45 +218,50 @@ export class StitchService {
     this.log.i("Getting random poem");
     try {
       prev_id = (prev_id === null) ? "5a5c60a68f25b906c03eb928" : prev_id;
-      if (this.isAuthenticated() === false || this.isAuthenticated() === null) {
-        this.doLoginAnonymous();
-      }
-      this.storage.is_busy = true;
-      let filters = [];
-      if ( this.storage.is_filtered) {
-        filters = this.stringToArray(this.storage.filter_tags);
+      if (this.storage.is_anonymous === false && this.isAuthenticated() === false) {
+            this.doLoginAnonymous().then( res => {
+            this.log.l(res);
+            this.getRandomPoem(prev_id);
+            // this.log.l("calling getRandom");
+          }).catch( err => this.log.warn(err));
       } else {
-        filters = null;
+        this.storage.is_busy = true;
+        let filters = [];
+        if ( this.storage.is_filtered) {
+          filters = this.stringToArray(this.storage.filter_tags);
+        } else {
+          filters = null;
+        }
+        this.log.l(filters);
+        this.client
+          .executeFunction("getRandomPoemByTags", filters, prev_id)
+          .then(result => {
+            this.log.i("Random poem fetched.");
+            const poem = {
+              _id: result._id,
+              title: result.title,
+              author: result.author,
+              poem: result.poem,
+              date_submitted: result.date_submitted,
+              for: result.for,
+              for_email: result.for_email,
+              tags: result.tags,
+              likes: result.likes,
+              owner_id: result.owner_id,
+              public: result.public,
+              own_poem: result.own_poem,
+              published: result.published,
+              shares: result.shares
+            };
+            // this.log.raw(poem);
+            this.random_poem_subject.next(poem);
+            this.storage.is_busy = false;
+          })
+          .catch(err => {
+            this.storage.is_busy = false;
+            this.log.e(err);
+          });
       }
-      this.log.l(filters);
-      this.client
-        .executeFunction("getRandomPoemByTags", filters, prev_id)
-        .then(result => {
-          this.log.i("Random poem fetched.");
-          const poem = {
-            _id: result._id,
-            title: result.title,
-            author: result.author,
-            poem: result.poem,
-            date_submitted: result.date_submitted,
-            for: result.for,
-            for_email: result.for_email,
-            tags: result.tags,
-            likes: result.likes,
-            owner_id: result.owner_id,
-            public: result.public,
-            own_poem: result.own_poem,
-            published: result.published,
-            shares: result.shares
-          };
-          // this.log.raw(poem);
-          this.random_poem_subject.next(poem);
-          this.storage.is_busy = false;
-        })
-        .catch(err => {
-          this.storage.is_busy = false;
-          this.log.e(err);
-        });
     } catch (err) {
       this.log.e(err);
       this.storage.is_busy = false;

@@ -39,6 +39,7 @@ export class UserComponent implements OnInit {
         this.storage.is_logged_in = true;
         // this.storage.is_anonymous = false;
         this.stitch.getPoems();
+        this.storage.is_logging_in = false;
       }
       this.stitch.observable_poems.subscribe( result => {
         this.poem_list = [];
@@ -49,9 +50,11 @@ export class UserComponent implements OnInit {
     });
   }
   onGoogleLogin() {
+    this.storage.is_logging_in = true;
     this.stitch.doLoginGoogle();
   }
   onFBLogin() {
+    this.storage.is_logging_in = true;
     this.stitch.doLoginFB();
   }
   onLogout() {

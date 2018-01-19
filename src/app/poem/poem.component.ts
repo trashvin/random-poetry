@@ -48,6 +48,10 @@ export class PoemComponent implements OnInit, OnDestroy {
   }
   ngOnInit() {
     this.log.i("Poem Component init");
+    // check if logging in (netlify issue)
+    // if ( this.storage.is_logging_in === true) {
+    //   this.router.navigate(["user"]);
+    // }
     this.stitch.getRandomPoem(null);
     this.log.l("Subscribing...");
     this.subscriber = this.stitch.observable_random_poem.subscribe(res => {

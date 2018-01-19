@@ -15,11 +15,8 @@ export class StorageService {
   public set is_anonymous(value: boolean) {
     // setting this value starts a new session, clear local storage
     if ( value === true) {
-      console.log("Setting is_anonymous as TRUE");
       this.is_logged_in = false;
-    } else {
-      console.log("Setting is_anonymous as FALSE");
-    }
+    } 
     this.setValue("is_anonymous", value.toString() );
   }
   public get is_anonymous(): boolean {
@@ -31,9 +28,28 @@ export class StorageService {
     }
   }
   public get is_logged_in(): boolean {
-    const value = this.getValue("is_logged_in").toLowerCase();
+    const value = this.getValue("is_logged_in");
     if ( value !== null ) {
-      if ( value === "true") {
+      if ( value.toLowerCase() === "true") {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
+  }
+  public set is_logging_in(value: boolean) {
+    // setting this value starts a new session, clear local storage
+    if (value) {
+      this.is_anonymous = false;
+    }
+    this.setValue("is_logging_in", value.toString() );
+  }
+  public get is_logging_in(): boolean {
+    const value = this.getValue("is_logging_in");
+    if ( value !== null ) {
+      if ( value.toLowerCase() === "true") {
         return true;
       } else {
         return false;
@@ -113,6 +129,7 @@ export class StorageService {
     this.is_busy = false;
     // this.is_anonymous = false;
     this.is_logged_in = false;
+    this.is_logging_in = false;
   }
 
 }
